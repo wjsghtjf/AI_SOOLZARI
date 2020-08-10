@@ -2,7 +2,7 @@
 using Random = UnityEngine.Random;
 using Unity.MLAgents;
 using UnityEngine.Events;
-
+using UnityEngine.UI;
 namespace Unity.MLAgentsExamples
 {
     /// <summary>
@@ -23,8 +23,10 @@ namespace Unity.MLAgentsExamples
         [Header("Target Fell Protection")]
         public bool respawnIfFallsOffPlatform = true; //If the target falls off the platform, reset the position.
         public float fallDistance = 5; //distance below the starting height that will trigger a respawn 
-
-
+        int countBlue = 0;
+        public Text b_score;
+        int countRed = 0;
+        public Text r_score;
         private Vector3 m_startingPos; //the starting position of the target
         private Agent m_agentTouching; //the agent currently touching the target
 
@@ -84,6 +86,20 @@ namespace Unity.MLAgentsExamples
         {
             if (col.transform.CompareTag(tagToDetect))
             {
+                //Debug.Log("goodBlueteam");
+                countBlue = countBlue + 1;
+                b_score.text = countBlue.ToString();
+                onCollisionEnterEvent.Invoke(col);
+                if (respawnIfTouched)
+                {
+                    MoveTargetToRandomPosition();
+                }
+            }
+            if (col.transform.CompareTag("Red"))
+            {
+                //Debug.Log("goodRedteam");
+                countRed = countRed + 1;
+                r_score.text = countRed.ToString();
                 onCollisionEnterEvent.Invoke(col);
                 if (respawnIfTouched)
                 {
@@ -110,8 +126,10 @@ namespace Unity.MLAgentsExamples
 
         private void OnTriggerEnter(Collider col)
         {
+           
             if (col.CompareTag(tagToDetect))
             {
+             
                 onTriggerEnterEvent.Invoke(col);
             }
         }
